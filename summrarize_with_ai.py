@@ -77,7 +77,7 @@ def main(files: List[DiffFile]):
         file.report = get_report_for_the_file(file.fileA, file.fileB)
     reports = [file.report for file in files]
     result = summarize_reports(files)
-    print(result)
+    return result
 
 
-main(test_files)
+print(main(test_files))
