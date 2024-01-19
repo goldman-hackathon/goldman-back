@@ -10,6 +10,7 @@ python = "^3.10"
 fastapi = "^0.109.0"
 openai = "^1.8.0"
 pylint = "^3.0.3"
+requests = "^2.31.0"
 
 
 [build-system]

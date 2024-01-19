@@ -10,14 +10,17 @@ class FileContent:
         self.diff = diff
         self.report = ""
 
+
 class MergeRequest:
     id: int
     title: str
     description: str
     constents: list[FileContent]
+    report: str
 
     def __init__(self, id, title, description, contents) -> None:
         self.id = id
         self.title = title
         self.description = description
         self.contents = contents
+        self.report = ""

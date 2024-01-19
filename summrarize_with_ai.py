@@ -1,40 +1,15 @@
 from typing import List
 from openai import OpenAI
+from get_diff import get_diffs
+from utils import *
 import os
 
-
-def read_file(file_path):
-    with open(file_path, "r") as file:
-        return file.read()
-
-
-class DiffFile:
-    def __init__(self, fileA, fileB, name):
-        self.name = name
-        self.fileA = fileA
-        self.fileB = fileB
-        self.report = None
-
-
-# Reading the file contents
-new_file1 = read_file("../test_files/helpA.py")
-old_file1 = read_file("../test_files/helpB.py")
-new_file2 = read_file("../test_files/mainA.py")
-old_file2 = read_file("../test_files/mainB.py")
-new_file3 = read_file("../test_files/utilsA.py")
-old_file3 = read_file("../test_files/utilsB.py")
-
-file1 = DiffFile(new_file1, old_file1, "plik1")
-file2 = DiffFile(new_file2, old_file2, "plik2")
-file3 = DiffFile(new_file3, old_file3, "plik3")
-
-test_files = [file1, file2, file3]
 api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI()
 
 
-def get_report_for_the_file(new_file, old_file):
-    prompt = "Analyze the following two file versions and provide a concise summary of the changes. Present your summary in brief, numbered points, focusing on key alterations. Keep the summary as succinct as possible."
+def get_report_for_the_file(new_file, diff):
+    prompt = "Analyze the following file changes provided as a diff and provide a concise summary of the changes. Present your summary in brief, numbered points, focusing on key alterations. Keep the summary as succinct as possible."
 
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -42,7 +17,7 @@ def get_report_for_the_file(new_file, old_file):
             {"role": "system", "content": prompt},
             {
                 "role": "user",
-                "content": f"Old version: {old_file}, new version: {new_file}",
+                "content": f"File content:\n{new_file}\n\nDiff:\n{diff}",
             },
         ],
         max_tokens=1000,
@@ -50,7 +25,7 @@ def get_report_for_the_file(new_file, old_file):
     return response.choices[0].message.content
 
 
-def summarize_reports(files: List[DiffFile]):
+def summarize_reports(files: List[FileContent]):
     prompt = (
         "For a group for reports of changes in files summarize those changes in points."
     )
@@ -72,12 +47,23 @@ def summarize_reports(files: List[DiffFile]):
     return response.choices[0].message.content
 
 
-def make_report(files: List[DiffFile]):
-    for file in files:
-        file.report = get_report_for_the_file(file.fileA, file.fileB)
-    reports = [file.report for file in files]
-    result = summarize_reports(files)
+def make_full_report(merges: List[MergeRequest]):
+    for merge in merges:
+        for file in merge.contents:
+            file.report = get_report_for_the_file(file.content, file.diff)
+        merge.report = summarize_reports(merge.contents)
+        result += f"Report for {merge.title}:\n {merge.report}\n"
+    print(result)
     return result
 
 
-print(make_report(test_files))
+gitlab_url = "https://gitlab.com"
+private_token = "glpat-vhW7ZYkRC6JDFLqymUbs"
+date = "2020-01-01T00:00:00.000Z"
+project_id = "54052610"
+
+diffs = get_diffs(gitlab_url, private_token, date, project_id)
+
+make_full_report(diffs)
+
+# print(make_report(test_files))
