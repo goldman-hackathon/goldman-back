@@ -72,7 +72,7 @@ def summarize_reports(files: List[DiffFile]):
     return response.choices[0].message.content
 
 
-def main(files: List[DiffFile]):
+def make_report(files: List[DiffFile]):
     for file in files:
         file.report = get_report_for_the_file(file.fileA, file.fileB)
     reports = [file.report for file in files]
@@ -80,4 +80,4 @@ def main(files: List[DiffFile]):
     return result
 
 
-print(main(test_files))
+print(make_report(test_files))
