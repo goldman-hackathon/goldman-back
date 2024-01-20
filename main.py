@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from get_diff import get_diffs
+from summarize_ai import make_full_report
 
 app = FastAPI()
 
@@ -17,10 +18,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.post("/get_diffs")
 async def get_diffs_endpoint(request: Request):
     request_data = await request.json()
-    print(request_data['date'])
-    diffs = get_diffs(request_data['gitlab_url'], request_data['private_token'], request_data['date'], request_data['project_id'])
-    return str(diffs)
-
+    print(request_data["date"])
+    diffs = get_diffs(
+        request_data["gitlab_url"],
+        request_data["private_token"],
+        request_data["date"],
+        request_data["project_id"],
+    )
+    return make_full_report(diffs)
