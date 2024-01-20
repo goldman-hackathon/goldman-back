@@ -47,7 +47,7 @@ def summarize_reports(files: List[FileContent]):
 
 
 def finalize_the_report(report):
-    prompt = "Review the following detailed reports for each pull request. Provide a high-level summary, focusing on the most significant and impactful changes. Highlight key points in a concise manner."
+    prompt = "Review the following detailed reports for each pull request. Provide a high-level summary, focusing on the most significant and impactful changes. Highlight key points in a concise manner. Write the result in markdown."
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
