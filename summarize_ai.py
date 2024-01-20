@@ -105,8 +105,12 @@ def answer_for_a_question(prompt, json_report):
     return result_dict
 
 
+flag = True
+
+
 def make_full_report(merges: List[MergeRequest]):
-    if len(merges) == 0:
+    if len(merges) or flag == 0:
+        flag = False
         full_report = {"merges": merges, "main_result": "No merges"}
         return full_report
     result = ""
