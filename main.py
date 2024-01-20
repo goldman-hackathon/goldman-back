@@ -1,11 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-import requests
-import json
-from pydantic import BaseModel
 from get_diff import get_diffs
-import uvicorn
 
 app = FastAPI()
 
@@ -25,6 +20,7 @@ app.add_middleware(
 @app.post("/get_diffs")
 async def get_diffs_endpoint(request: Request):
     request_data = await request.json()
-    get_diffs(request_data['gitlab_url'], request_data['private_token'], request_data['date'], request_data['project_id'])
-    return "CHUJ"
+    print(request_data['date'])
+    diffs = get_diffs(request_data['gitlab_url'], request_data['private_token'], request_data['date'], request_data['project_id'])
+    return str(diffs)
 
