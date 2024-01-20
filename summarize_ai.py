@@ -17,7 +17,7 @@ def get_report_for_the_file(new_file, diff):
     # print(new_file)
     # print(diff)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",
+        model="gpt-4",
         messages=[
             {"role": "system", "content": prompt},
             {
@@ -44,7 +44,7 @@ def summarize_reports(files: List[FileContent], description):
         report_prompt += f"Report description: {description}\n File name: {file.name}\n Report: {file.report}\n"
     # print(report_prompt)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",
+        model="gpt-4",
         messages=[
             {"role": "system", "content": prompt},
             {
@@ -62,7 +62,7 @@ def summarize_reports(files: List[FileContent], description):
 def finalize_the_report(report):
     prompt = "Review the following detailed reports for each pull request. Provide a high-level summary, focusing on the most significant and impactful changes. Highlight key points in a concise manner. Write the result in markdown."
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",
+        model="gpt-4",
         messages=[
             {"role": "system", "content": prompt},
             {
@@ -90,7 +90,7 @@ def answer_for_a_question(prompt, json_report):
             diffs += f"pull request: {merge.title}, file name: {file.name}, file diff: {file.diff}\n"
     prompt = f"Answer based on file diffs on {prompt}"
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",
+        model="gpt-4-1106-preview",
         messages=[
             {"role": "system", "content": prompt},
             {
@@ -106,6 +106,9 @@ def answer_for_a_question(prompt, json_report):
 
 
 def make_full_report(merges: List[MergeRequest]):
+    if len(merges) == 0:
+        full_report = {"merges": merges, "main_result": "No merges"}
+        return full_report
     result = ""
     for merge in merges:
         for file in merge.contents:
