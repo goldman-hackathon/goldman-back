@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from get_diff import get_diffs
-from summarize_ai import make_full_report
+from summarize_ai import make_full_report, answer_for_a_question
 
 app = FastAPI()
 
@@ -18,6 +18,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.post("/ask_question")
+async def ask_question_endpoint(request: Request):
+    request_data = await request.json()
+    print(request_data["prompt"])
+    return answer_for_a_question(request_data["prompt"], request_data["content"])
 
 @app.post("/get_diffs")
 async def get_diffs_endpoint(request: Request):
