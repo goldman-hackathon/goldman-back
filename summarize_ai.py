@@ -17,7 +17,7 @@ def get_report_for_the_file(new_file, diff):
     # print(new_file)
     # print(diff)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-1106",
         messages=[
             {"role": "system", "content": prompt},
             {
@@ -44,7 +44,7 @@ def summarize_reports(files: List[FileContent], description):
         report_prompt += f"Report description: {description}\n File name: {file.name}\n Report: {file.report}\n"
     # print(report_prompt)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-1106",
         messages=[
             {"role": "system", "content": prompt},
             {
@@ -62,7 +62,7 @@ def summarize_reports(files: List[FileContent], description):
 def finalize_the_report(report):
     prompt = "Review the following detailed reports for each pull request. Provide a high-level summary, focusing on the most significant and impactful changes. Highlight key points in a concise manner. Write the result in markdown."
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-1106",
         messages=[
             {"role": "system", "content": prompt},
             {
@@ -77,27 +77,30 @@ def finalize_the_report(report):
     return response.choices[0].message.content
 
 
-# def unpack_report(json_report: str) -> List[MergeRequest]:
-#     report_dict = json.loads(json_report)
-#     return [MergeRequest.from_dict(item) for item in report_dict["merges"]]
+def unpack_report(json_report: str) -> List[MergeRequest]:
+    report_dict = json.loads(json_report)
+    return [MergeRequest.from_dict(item) for item in report_dict["merges"]]
 
 
-# def answer_for_a_question(prompt, json_report):
-#     prompt = "Give the "
-#     response = client.chat.completions.create(
-#         model="gpt-3.5-turbo",
-#         messages=[
-#             {"role": "system", "content": prompt},
-#             {
-#                 "role": "user",
-#                 "content": report,
-#             },
-#         ],
-#         # max_tokens=1000,
-#     )
-#     unpacked = unpack_report(json_report)
-#     print(unpacked)
-#     return response.choices[0].message.content
+def answer_for_a_question(prompt, json_report):
+    unpacked = unpack_report(json_report)
+    diffs = ""
+    for merge in unpacked:
+        for file in merge.contents:
+            diffs += f"pull request: {merge.title}, file name: {file.name}, file diff: {file.diff}\n"
+    prompt = f"Answer based on file diffs on {prompt}"
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo-1106",
+        messages=[
+            {"role": "system", "content": prompt},
+            {
+                "role": "user",
+                "content": diffs,
+            },
+        ],
+        # max_tokens=1000,
+    )
+    return response.choices[0].message.content
 
 
 def make_full_report(merges: List[MergeRequest]):
@@ -115,7 +118,11 @@ def make_full_report(merges: List[MergeRequest]):
     print(final_result)
     # Serialize to JSON
     result = json.dumps(full_report)
-    # answer_for_a_question("asd", result)
+    print(
+        answer_for_a_question(
+            "Explain the idea of search function in the best solution?", result
+        )
+    )
     return result
 
 
