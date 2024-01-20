@@ -1,3 +1,6 @@
+from typing import Any, Dict
+
+
 class FileContent:
     name: str
     content: str
@@ -17,6 +20,10 @@ class FileContent:
             "diff": self.diff,
             "report": self.report,
         }
+
+    @staticmethod
+    def from_dict(data: Dict[str, Any]):
+        return FileContent(data["name"], data["content"], data["diff"])
 
 
 class MergeRequest:
@@ -43,3 +50,8 @@ class MergeRequest:
             ],  # Convert each FileContent object to a dictionary
             "report": self.report,
         }
+
+    @staticmethod
+    def from_dict(data: Dict[str, Any]):
+        contents = [FileContent.from_dict(item) for item in data["contents"]]
+        return MergeRequest(data["id"], data["title"], data["description"], contents)
