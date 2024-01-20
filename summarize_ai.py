@@ -100,7 +100,9 @@ def answer_for_a_question(prompt, json_report):
         ],
         # max_tokens=1000,
     )
-    return response.choices[0].message.content
+    result_dict = {"main_result": response.choices[0].message.content.strip()}
+
+    return result_dict
 
 
 def make_full_report(merges: List[MergeRequest]):
