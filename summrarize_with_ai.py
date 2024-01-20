@@ -3,6 +3,7 @@ from openai import OpenAI
 from get_diff import get_diffs
 from utils import *
 import os
+import json
 
 api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI()
@@ -27,7 +28,7 @@ def get_report_for_the_file(new_file, diff):
 
 
 def summarize_reports(files: List[FileContent]):
-    prompt = "Review the provided reports of file changes and summarize the most significant alterations in a clear, organized manner. Focus on highlighting the key modifications in each file, avoiding minor details. Present the summary in a concise, bullet-point format, ensuring each point captures the essence of the change."
+    prompt = "Review the provided reports of file changes and summarize the most significant alterations in a clear, organized manner. Focus on highlighting the key modifications in each file, avoiding minor details. Present the summary in a concise, bullet-point format, ensuring each point captures the essence of the change and you include the name of the file in which the change was made."
     report_prompt = ""
     for file in files:
         report_prompt += f"File name: {file.name}\n Report: {file.report}\n"
@@ -69,10 +70,14 @@ def make_full_report(merges: List[MergeRequest]):
             file.report = get_report_for_the_file(file.content, file.diff)
         merge.report = summarize_reports(merge.contents)
         result += f"Report for {merge.title}: {merge.report}\n"
-    # print(result)
-    result = finalize_the_report(result)
-    # print(result)
-    return result
+
+    final_result = finalize_the_report(result)
+
+    merges_dict = [merge.to_dict() for merge in merges]
+    full_report = {"merges": merges_dict, "main_result": final_result}
+
+    # Serialize to JSON
+    return json.dumps(full_report)
 
 
 gitlab_url = "https://gitlab.com"
@@ -82,6 +87,6 @@ project_id = "54052610"
 
 diffs = get_diffs(gitlab_url, private_token, date, project_id)
 
-make_full_report(diffs)
+print(make_full_report(diffs))
 
 # print(make_report(test_files))

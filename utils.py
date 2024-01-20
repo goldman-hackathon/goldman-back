@@ -10,6 +10,14 @@ class FileContent:
         self.diff = diff
         self.report = ""
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "content": self.content,
+            "diff": self.diff,
+            "report": self.report,
+        }
+
 
 class MergeRequest:
     id: int
@@ -24,3 +32,14 @@ class MergeRequest:
         self.description = description
         self.contents = contents
         self.report = ""
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "contents": [
+                content.to_dict() for content in self.contents
+            ],  # Convert each FileContent object to a dictionary
+            "report": self.report,
+        }
