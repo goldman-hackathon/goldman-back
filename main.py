@@ -22,7 +22,7 @@ app.add_middleware(
 async def ask_question_endpoint(request: Request):
     request_data = await request.json()
     print(request_data["prompt"])
-    return answer_for_a_question(request_data["prompt"], request_data["content"])
+    return answer_for_a_question(request_data["prompt"], request_data["context"])
 
 @app.post("/get_diffs")
 async def get_diffs_endpoint(request: Request):
