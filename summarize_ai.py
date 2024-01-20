@@ -26,6 +26,7 @@ def get_report_for_the_file(new_file, diff):
             },
         ],
         temperature=0,
+        top_p=0.1,
         # max_tokens=1000,
     )
     return response.choices[0].message.content
@@ -52,6 +53,7 @@ def summarize_reports(files: List[FileContent], description):
             },
         ],
         temperature=0,
+        top_p=0.1,
         # max_tokens=1000,
     )
     return response.choices[0].message.content
@@ -69,6 +71,7 @@ def finalize_the_report(report):
             },
         ],
         temperature=0,
+        top_p=0.1,
         # max_tokens=1000,
     )
     return response.choices[0].message.content

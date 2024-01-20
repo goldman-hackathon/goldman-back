@@ -1,17 +1,19 @@
-Report for even better solution: - Sudoku.hs:
-  - Added a new function `solve3` which is similar to `solve2` but uses the `fix` function
-  - Added a new function `fix` which takes a function and an argument and applies the function repeatedly until the result doesn't change
-  - Added a new definition for `single` function which checks if a list has only one element
-  - Added a new definition for `solve3` function which filters valid grids after collapsing and applying the `prune` function using `fix` function
-  - Added a new definition for `fix` function which applies a function repeatedly until the result doesn't change
+Report for best solution: Summary of changes in Sudoku.hs:
+- Added functions `void`, `safe`, `consistent`, `blocked`, `solve4`, `search`, and `expand`
+- These functions are related to solving the Sudoku puzzle
+- They are used to check if a matrix of choices is valid, prune the choices, and search for a solution
+- The `expand` function is used to generate possible next steps in the search process
+Report for even better solution: Changes in Sudoku.hs:
+- Added a new function `solve3` which filters valid grids by collapsing and fixing the choices using the `prune` function.
+- Added a new function `fix` which takes a function and applies it repeatedly until the result doesn't change.
+- Removed the newline at the end of the file.
 Report for Better solution: Changes in Sudoku.hs:
-- Modified import statement to include `(\\)` function from `Data.List` module.
-- Added `prune` function, which applies `pruneBy` function to matrix by calling it on `boxs`, `cols`, and `rows`.
-- Added `reduce` function, which reduces choices in a row by removing singles.
-- Added `minus` function, which subtracts one list of choices from another using `(\\)` function if first list is not a single choice.
-- Added `single` function, which checks if a list contains only one element.
-- Added `solve2` function, which filters valid grids after collapsing and pruning matrix.
-- Removed `solve3` function.
+- Modified import statement to include the (\\) function from Data.List.
+- Added functions: prune, reduce, minus, and single.
+- Added solve2 function, which filters valid grids after collapsing and pruning choices.
+- Added solve3, void, safe, blocked, and solve4 functions.
+- Added search and expand functions.
+- File ends with a missing newline character.
 Report for Simple: Changes in Sudoku.hs:
 - Added a new type `Choices` which is a list of `Value`
 - Added a `choices` function that converts a `Grid` into a `Matrix Choices`
@@ -21,18 +23,23 @@ Report for Simple: Changes in Sudoku.hs:
 
 ## Summary
 
-- The "even better solution" pull request introduces a new function `solve3` which uses the `fix` function to solve the Sudoku puzzle. It also adds a new definition for the `single` function and a new definition for the `fix` function.
-- The "better solution" pull request modifies the import statement, adds the `prune`, `reduce`, `minus`, `single`, and `solve2` functions, and removes the `solve3` function.
-- The "simple" pull request adds the `Choices` type, the `choices`, `solve`, `cp`, and `collapse` functions.
+The best solution for the Sudoku puzzle involves adding several functions to the `Sudoku.hs` file. These functions are used to solve the puzzle by checking the validity of the choices, pruning the choices, and searching for a solution. The even better solution builds upon the best solution by adding a new function to filter valid grids by collapsing and fixing the choices. The better solution modifies the import statement, adds more functions, and ends with a missing newline character. The simple solution adds a new type, functions to convert and solve the puzzle, and functions to generate combinations.
 
 ## Key Points
 
-- The "even better solution" pull request introduces a more efficient way to solve the Sudoku puzzle using the `fix` function.
-- The "better solution" pull request improves the code by adding functions for pruning and reducing choices, as well as filtering valid grids.
-- The "simple" pull request simplifies the code by introducing a new type and functions for generating combinations and solving the puzzle.
+- Best Solution:
+  - Added functions related to solving the Sudoku puzzle
+  - Functions check validity, prune choices, and search for a solution
 
-## Impact
+- Even Better Solution:
+  - Added a new function to filter valid grids by collapsing and fixing choices
+  - Added a function to apply a function repeatedly until the result doesn't change
 
-- The "even better solution" pull request improves the efficiency of solving the Sudoku puzzle.
-- The "better solution" pull request improves the code by adding more functionality and making it more readable.
-- The "simple" pull request simplifies the code and makes it easier to understand and maintain.
+- Better Solution:
+  - Modified import statement
+  - Added more functions related to solving the Sudoku puzzle
+  - Ends with a missing newline character
+
+- Simple Solution:
+  - Added a new type and functions to convert and solve the puzzle
+  - Added functions to generate combinations
