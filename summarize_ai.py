@@ -117,14 +117,14 @@ def make_full_report(merges: List[MergeRequest]):
 
     merges_dict = [merge.to_dict() for merge in merges]
     full_report = {"merges": merges_dict, "main_result": final_result}
-    print(final_result)
+    # print(final_result)
     # Serialize to JSON
     result = json.dumps(full_report)
-    print(
-        answer_for_a_question(
-            "Explain the idea of search function in the best solution?", result
-        )
-    )
+    # print(
+    #     answer_for_a_question(
+    #         "Explain the idea of search function in the best solution?", result
+    #     )
+    # )
     return result
 
 
